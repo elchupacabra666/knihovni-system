@@ -18,3 +18,19 @@
     min-height: 1px;
     padding: 1.25rem;
 }
+
+.suggestions {
+  display: none;
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #7a7676;
+}
+
+div.suggestion-item {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.suggestion-item:hover {
+  background-color: #ffffff;
+}

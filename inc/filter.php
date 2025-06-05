@@ -37,9 +37,13 @@ if (!empty($countries)) {
 
 
 echo '  </select>
-          <label for="search"></label>
-          <input class="form-control" name="search" id="search" type="search" 
-             value="'.htmlspecialchars($_GET['search']).'"placeholder="Zadej název knihy, autora…"  />
-          <input type="submit" value="OK" class="d-none" />
+          <label for="bookSearch"></label>
+          <input class="form-control" name="search" id="bookSearch" type="text" autocomplete="off" 
+             value="'.htmlspecialchars($_GET['search']).'"placeholder="Název knihy nebo jméno autora..."  />
+          <input type="hidden" name="book_id" id="bookId" value="<?php echo $bookId;?>" />
+
+          <div id="suggestions" style="border:1px solid #ccc; max-height:150px; overflow-y:auto;"></div>
           
         </form>';
+
+echo    '<script src="assets/search_books.js"></script>';
