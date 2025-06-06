@@ -15,7 +15,7 @@ document.getElementById('bookSearch').addEventListener('input', function () {
 
       data.forEach(book => {
         const div = document.createElement('div');
-        div.textContent = `${book.title} — ${book.author} (${book.year})`;
+        div.textContent = `${book.title} (${book.book_id}) — ${book.author} (${book.year})`;
         div.classList.add('suggestion-item');
         div.onclick = () => {
           document.getElementById('bookSearch').value = book.title;  //prida ze na kliknuti muzu zvolit tu vybranou knihu
