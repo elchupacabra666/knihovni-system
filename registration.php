@@ -58,8 +58,6 @@
       $_SESSION['user_id']=$db->lastInsertId();
       $_SESSION['user_name']=$name;
 
-      var_dump($_SESSION['user_id']);
-
       //přesměrování na homepage
       //header('Location: index.php');
       //exit();

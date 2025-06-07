@@ -17,7 +17,14 @@
           echo '<strong>'.htmlspecialchars($_SESSION['user_name']).'</strong>';
           echo ' - ';
           echo '<a href="logout.php" class="text-white">Odhlásit se</a>';
-        }else{
+          echo '<br>';
+          echo '<a href="loans.php?user='.$_SESSION['user_id'].'" class="text-white">Výpůjčky uživatele</a>';
+
+          if ($_SESSION['role'] == 'admin') {
+            echo '<br> <a href="new-loan.php" class="text-white">Nová výpůjčka</a>';
+          }
+        } 
+        else {
           echo '<a href="login.php" class="text-white">Přihlásit se</a>';
           echo '<br>';
           echo '<a href="registration.php" class="text-white">Registrovat se</a>';

@@ -12,7 +12,7 @@
   $bookTitle = '';
   $bookDescription = '';
   $bookCategoryId = '';
-  $bookImagePath = 'covers/1.jpg';
+  $bookImage = '';
   $bookAuthor = '';
   $bookYear = '';
   $bookCountryId = '';
@@ -27,7 +27,7 @@
       $bookTitle = $book['title'];
       $bookDescription = $book['description'];
       $bookCategoryId = $book['category_id'];
-      $bookImagePath = $book['image'];
+      $bookImage = $book['image'];
       $bookAuthor = $book['author'];
       $bookYear = $book['year'];
       $bookCountryId = $book['country_id'];
@@ -81,19 +81,23 @@
     $bookTitle=trim(@$_POST['title']);
     if (empty($bookTitle)){
       $errors['title']='Musíte zadat název knihy.';
+    } else if (mb_strlen($bookTitle)  > 100) {
+      $errors['title']='Název je moc dlouhý.';
     }
     #endregion kontrola textu
 
     $bookDescription = trim(@$_POST['description']);
     if (empty($bookDescription)){
       $errors['description']='Musíte zadat popis knihy.';
+    } else if (mb_strlen($bookDescription) > 65530) {
+      $errors['description']='Popis je moc dlouhý.';
     }
 
     #region kontrola roku vydání
     $bookYear = trim(@$_POST['year']);
     if (empty($bookYear)) {
       $errors['year'] = 'Musíte zadat rok vydání.';
-    } else if (!is_numeric($bookYear) || $bookYear < 0) {
+    } else if (!is_numeric($bookYear) || $bookYear < 0 || $bookYear >= 10000) {
       $errors['year'] = 'Zadejte platný rok vydání.';
     }
     #endregion kontrola roku vydání
@@ -102,8 +106,49 @@
     $bookAuthor = trim(@$_POST['author']);
     if (empty($bookAuthor)) {
       $errors['author'] = 'Musíte zadat autora.';
+    } else if (mb_strlen($bookAuthor) > 100) {
+      $errors['author']='Jméno autora je moc dlouhé.';
     }
     #endregion kontrola autora
+
+    if (!empty($_FILES['image']['name'])) {
+
+      // size check 
+      if ($_FILES['image']['size'] > 2 * 1024 * 1024) { // 2MB limit
+        $errors['image'] = 'Soubor je příliš velký. Maximální velikost je 2MB.';
+      }
+
+      // extension check
+      if (empty($errors['image'])) {
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $fileExtension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+        $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $fileMimeType = mime_content_type($_FILES['image']['tmp_name']);
+        if (!in_array($fileExtension, $allowedExtensions) || !in_array($fileMimeType, $allowedMimeTypes)) {
+          $errors['image'] = 'Nepovolený formát obrázku.';
+        }
+      }
+
+      if (empty($errors['image'])) {
+        $uploadDirectory = __DIR__ . '/covers/'; 
+        if (!is_dir($uploadDirectory)) {
+            mkdir($uploadDirectory, 0770, true);
+        }
+        
+        $oldImage = $bookImage;
+        $bookImage = uniqid() . '_' . bin2hex(random_bytes(5)) . '.' . $fileExtension;
+        $newName = $uploadDirectory . $bookImage;
+
+        if (!move_uploaded_file($_FILES['image']['tmp_name'], $newName)) {
+            $errors['image'] = 'Nepodařilo se nahrát obrázek.';
+        } else if (!empty($oldImage) && file_exists($uploadDirectory . $oldImage)) {
+          unlink($uploadDirectory . $oldImage);
+        }
+      }
+    } else if (!$bookId) {
+    // If creating a new book and no image uploaded
+    $errors['image'] = "Musíte nahrát obrázek knihy.";
+} 
 
     if (empty($errors)){
       #region uložení dat
@@ -116,7 +161,7 @@
           ':title'=>$bookTitle,
           ':description'=>$bookDescription,
           ':category'=>$bookCategoryId,
-          ':image'=>$bookImagePath,
+          ':image'=>$bookImage,
           ':author'=>$bookAuthor,
           ':year'=>$bookYear,
           ':country'=>$bookCountryId,
@@ -130,7 +175,7 @@
             ':title' => $bookTitle,
             ':description' => $bookDescription,
             ':category' => $bookCategoryId,
-            ':image' => $bookImagePath,
+            ':image' => $bookImage,
             ':author' => $bookAuthor,
             ':year' => $bookYear,
             ':country' => $bookCountryId
@@ -140,8 +185,11 @@
 
       #endregion uložení dat
       #region přesměrování
+
         header('Location: index.php');
         exit();
+
+      
       #endregion přesměrování
     }
     #endregion zpracování formuláře
@@ -157,7 +205,7 @@
   include 'inc/header.php';
 ?>
 
-  <form method="post">
+  <form method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $bookId;?>" />
 
     <div class="form-group">
@@ -245,6 +293,19 @@
         }
       ?>
     </div>
+    <div class="form-group">
+      <label for="image">Náhled knížky:</label>
+      <?php if (!empty($bookImage)){ ?>
+          <div>
+              <img src="covers/<?php echo htmlspecialchars($bookImage); ?>">
+          </div>
+      <?php } ?>
+      <input type="file" name="image" id="image" class="form-control <?php echo (!empty($errors['image']) ? 'is-invalid' : ''); ?>" />
+      <?php if (!empty($errors['image'])) { ?>
+          <div class="invalid-feedback"><?php echo $errors['image']; ?></div>
+      <?php }; ?>
+    </div>
+
 
     <button type="submit" class="btn btn-primary">Uložit</button>
     <a href="index.php" class="btn btn-light">Zrušit</a>

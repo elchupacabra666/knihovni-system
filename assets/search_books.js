@@ -19,7 +19,10 @@ document.getElementById('bookSearch').addEventListener('input', function () {
         div.classList.add('suggestion-item');
         div.onclick = () => {
           document.getElementById('bookSearch').value = book.title;  //prida ze na kliknuti muzu zvolit tu vybranou knihu
-          document.getElementById('bookId').value = book.book_id;
+          const bookIdInput = document.getElementById('bookId');
+          if (bookIdInput) {
+            bookIdInput.value = book.book_id;
+          }
           suggestions.innerHTML = '';
           suggestions.style.display = 'none';
         };

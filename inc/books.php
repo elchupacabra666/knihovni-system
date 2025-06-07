@@ -55,7 +55,7 @@ if (!empty($books)) {
     echo '<div class="row">';
     foreach ($books as $book) {
         echo '<div class="book-card" style="width: 8rem;">';
-        echo    '<img src=' . htmlspecialchars($book['image']) . ' class="card-img-top">';
+        echo    '<img src=covers/' . htmlspecialchars($book['image']) . ' class="card-img-top">';
         echo    '<div class="card-body">';
         echo      '<h2 class="h6 fw-bold">' . htmlspecialchars($book['title']) . '</h2>';
         if ($_SESSION['role'] == 'admin') {
