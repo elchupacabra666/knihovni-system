@@ -1,6 +1,6 @@
 <?php  require_once 'inc/user.php';
 
-  if ($_SESSION['role'] != 'admin' || $_SESSION['user_id'] != $_GET['user']){
+  if ($_SESSION['user_role'] != 'admin' || $_SESSION['user_id'] != $_GET['user']){
     header('Location: index.php');
     exit();
   }
@@ -20,7 +20,7 @@
   
 
 
-  if (!empty($_POST['extend_loan_id']) && $_SESSION['role'] == 'admin') {
+  if (!empty($_POST['extend_loan_id']) && $_SESSION['user_role'] == 'admin') {
     // prodlouzeni vypujcky pres post
     $extendLoanId = $_POST['extend_loan_id'];
 
@@ -30,7 +30,7 @@
     exit();
   }
 
-  if (!empty($_POST['finish_loan_id']) && $_SESSION['role'] == 'admin') {
+  if (!empty($_POST['finish_loan_id']) && $_SESSION['user_role'] == 'admin') {
     // prodlouzeni vypujcky pres post
     $finishLoanId = $_POST['finish_loan_id'];
     $q = $db->prepare('SELECT loans.book_id FROM loans WHERE loan_id = :id LIMIT 1');
@@ -73,7 +73,7 @@
           }
           echo '</li>';
           
-          if ($_SESSION['role'] == 'admin') {
+          if ($_SESSION['user_role'] == 'admin') {
             echo '<form method="post" style="display:inline;">
                 <input type="hidden" name="extend_loan_id" value="'.$loan['loan_id'].'">
                 <button type="submit" class="btn-sm btn-success">Prodloužit</button>

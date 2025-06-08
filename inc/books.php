@@ -58,7 +58,7 @@ if (!empty($books)) {
         echo    '<img src=covers/' . htmlspecialchars($book['image']) . ' class="card-img-top">';
         echo    '<div class="card-body">';
         echo      '<h2 class="h6 fw-bold">' . htmlspecialchars($book['title']) . '</h2>';
-        if ($_SESSION['role'] == 'admin') {
+        if ($_SESSION['user_role'] == 'admin') {
             echo      '<a href="edit.php?id='.$book['book_id'].'" class="btn-sm btn-primary ">Upravit</a>';
         }
         echo    '</div>';

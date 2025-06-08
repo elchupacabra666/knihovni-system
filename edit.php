@@ -2,7 +2,7 @@
   
   require_once 'inc/user.php';
 
-  if ($_SESSION['role'] != 'admin'){
+  if ($_SESSION['user_role'] != 'admin'){
     header('Location: index.php');
     exit();
   }

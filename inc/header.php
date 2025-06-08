@@ -20,7 +20,7 @@
           echo '<br>';
           echo '<a href="loans.php?user='.$_SESSION['user_id'].'" class="text-white">Výpůjčky uživatele</a>';
 
-          if ($_SESSION['role'] == 'admin') {
+          if ($_SESSION['user_role'] == 'admin') {
             echo '<br> <a href="new-loan.php" class="text-white">Nová výpůjčka</a>';
           }
         } 
