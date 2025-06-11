@@ -56,7 +56,7 @@
 ?>
 
 <div class="card shadow-sm border-0 mb-4">
-    <div class="card-header bg-info text-white">
+    <div class="card-header bg-dark text-white">
         <h4 class="card-title mb-0">
             <i class="bi bi-person-circle me-2"></i>
             <?php echo htmlspecialchars($name); ?>
@@ -70,7 +70,7 @@
 <div class="row">
     <div class="col-lg-6 mb-4">
         <div class="card shadow-sm border-0">
-            <div class="card-header bg-warning text-dark">
+            <div class="card-header bg-success text-white">
                 <h5 class="card-title mb-0">
                     <i class="bi bi-clock me-2"></i>Aktivní výpůjčky
                 </h5>
