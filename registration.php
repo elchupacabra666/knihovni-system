@@ -113,7 +113,7 @@
             <input type="text" name="name" id="name" required 
                    class="form-control <?php echo (!empty($errors['name'])?'is-invalid':''); ?>"
                    value="<?php echo !empty($name)?htmlspecialchars($name):'';?>" 
-                   placeholder="Zadejte své jméno"/>
+                   placeholder="Zadejte své jméno či přezdívku"/>
             <?php
               echo (!empty($errors['name'])?'<div class="invalid-feedback">'.$errors['name'].'</div>':'');
             ?>
