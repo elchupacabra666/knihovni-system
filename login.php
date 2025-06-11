@@ -39,25 +39,64 @@
   include 'inc/header.php';
 ?>
 
-  <h2>Přihlášení uživatele</h2>
+<div class="row justify-content-center">
+  <div class="col-lg-5">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-primary text-white text-center">
+        <h4 class="card-title mb-0">
+          <i class="bi bi-box-arrow-in-right me-2"></i>Přihlášení
+        </h4>
+      </div>
+      <div class="card-body p-4">
+        <form method="post">
+          <div class="mb-3">
+            <label for="email" class="form-label fw-semibold">
+              <i class="bi bi-envelope me-1"></i>E-mail
+            </label>
+            <input type="email" name="email" id="email" required 
+                   class="form-control <?php echo (!empty($errors)?'is-invalid':''); ?>" 
+                   value="<?php echo !empty($_POST['email'])?htmlspecialchars($_POST['email']):'';?>"
+                   placeholder="váš@email.cz"/>
+            <?php
+              echo (!empty($errors['email'])?'<div class="invalid-feedback">'.$errors['email'].'</div>':'');
+            ?>
+          </div>
 
-  <form method="post">
-    <div class="form-group">
-      <label for="email">E-mail:</label>
-      <input type="email" name="email" id="email" required class="form-control <?php echo (!empty($errors)?'is-invalid':''); ?>" value="<?php echo !empty($_POST['email'])?htmlspecialchars($_POST['email']):'';?>"/>
-      <?php
-        echo (!empty($errors['email'])?'<div class="invalid-feedback">'.$errors['email'].'</div>':'');
-      ?>
+          <div class="mb-4">
+            <label for="password" class="form-label fw-semibold">
+              <i class="bi bi-lock me-1"></i>Heslo
+            </label>
+            <input type="password" name="password" id="password" required 
+                   class="form-control <?php echo ($errors?'is-invalid':''); ?>" 
+                   placeholder="Zadejte heslo"/>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary btn-lg">
+              <i class="bi bi-box-arrow-in-right me-2"></i>Přihlásit se
+            </button>
+          </div>
+        </form>
+
+        <hr class="my-4">
+
+        <div class="text-center">
+          <p class="text-muted mb-3">Nemáte účet?</p>
+          <div class="d-flex gap-2 justify-content-center">
+            <a href="registration.php" class="btn btn-outline-success">
+              <i class="bi bi-person-plus me-1"></i>Registrovat se
+            </a>
+            <a href="index.php" class="btn btn-outline-secondary">
+              <i class="bi bi-arrow-left me-1"></i>Zpět
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="password">Heslo:</label>
-      <input type="password" name="password" id="password" required class="form-control <?php echo ($errors?'is-invalid':''); ?>" />
-    </div>
-    <button type="submit" class="btn btn-primary">přihlásit se</button>
-    <a href="registration.php" class="btn btn-light">registrovat se</a>
-    <a href="index.php" class="btn btn-light">zrušit</a>
-  </form>
+  </div>
+</div>
 
 <?php
   //vložíme do stránek patičku
   include 'inc/footer.php';
+?>
