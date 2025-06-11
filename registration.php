@@ -35,9 +35,24 @@
     #endregion kontrola emailu
 
     #region kontrola hesla
-    if (empty($_POST['password']) || (strlen($_POST['password'])<5)){
-      $errors['password']='Musíte zadat heslo o délce alespoň 5 znaků.';
+    // Silnější validace hesla
+    $newUserPassword = $_POST['password'];
+    if (empty($newUserPassword)) {
+      $errors['password'] = 'Zadejte heslo.';
+    } 
+    if (mb_strlen($newUserPassword) < 8) {
+      $errors['password'] = 'Heslo musí mít alespoň 8 znaků.';
     }
+    if (!preg_match('/[A-Z]/', $newUserPassword)) {
+      $errors['password'] = 'Heslo musí obsahovat alespoň jedno velké písmeno.';
+    }
+    if (!preg_match('/[0-9]/', $newUserPassword)) {
+      $errors['password'] = 'Heslo musí obsahovat alespoň jedno číslo.';
+    }
+    if (!preg_match('/[\W_]/', $newUserPassword)) {
+      $errors['password'] = 'Heslo musí obsahovat alespoň jeden speciální znak.';
+    }
+    
     if ($_POST['password']!=$_POST['password2']){
       $errors['password2']='Zadaná hesla se neshodují.';
     }

@@ -1,6 +1,6 @@
 <?php  require_once 'inc/user.php';
 
-  if ($_SESSION['user_role'] != 'admin' || $_SESSION['user_id'] != $_GET['user']){
+  if ($_SESSION['user_role'] != 'admin' && $_SESSION['user_id'] != $_GET['user']){
     header('Location: index.php');
     exit();
   }

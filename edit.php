@@ -297,7 +297,7 @@
       <label for="image">Náhled knížky:</label>
       <?php if (!empty($bookImage)){ ?>
           <div>
-              <img src="covers/<?php echo htmlspecialchars($bookImage); ?>">
+                <img src="covers/<?php echo htmlspecialchars($bookImage); ?>" style="max-width:200px; max-height:200px;" alt="Náhled obálky">
           </div>
       <?php } ?>
       <input type="file" name="image" id="image" class="form-control <?php echo (!empty($errors['image']) ? 'is-invalid' : ''); ?>" />
