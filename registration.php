@@ -74,8 +74,8 @@
       $_SESSION['user_name']=$name;
 
       //přesměrování na homepage
-      //header('Location: index.php');
-      //exit();
+      header('Location: index.php');
+      exit();
     }
 
     #endregion zpracování formuláře
