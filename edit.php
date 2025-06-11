@@ -146,8 +146,7 @@
         }
       }
     } else if (!$bookId) {
-    // If creating a new book and no image uploaded
-    $errors['image'] = "Musíte nahrát obrázek knihy.";
+    $bookImage = 'default.jpg';
 } 
 
     if (empty($errors)){
@@ -205,112 +204,177 @@
   include 'inc/header.php';
 ?>
 
-  <form method="post" enctype="multipart/form-data">
-    <input type="hidden" name="id" value="<?php echo $bookId;?>" />
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-primary text-white">
+        <h4 class="card-title mb-0">
+          <i class="bi bi-<?php echo $bookId ? 'pencil' : 'plus-circle'; ?> me-2"></i>
+          <?php echo $bookId ? 'Úprava knihy' : 'Nová kniha'; ?>
+        </h4>
+      </div>
+      <div class="card-body p-4">
+        <form method="post" enctype="multipart/form-data">
+          <input type="hidden" name="id" value="<?php echo $bookId;?>" />
 
-    <div class="form-group">
-      <label for="title">Název knihy:</label>
-      <input type="text" name="title" id="title" required class="form-control <?php echo (!empty($errors['title'])?'is-invalid':''); ?>" value="<?php echo htmlspecialchars($bookTitle)?>"></input>
-      <?php
-        if (!empty($errors['title'])){
-          echo '<div class="invalid-feedback">'.$errors['title'].'</div>';
-        }
-      ?>
-    </div>
+          <div class="row g-3">
+            <div class="col-md-8">
+              <label for="title" class="form-label fw-semibold">
+                <i class="bi bi-book me-1"></i>Název knihy
+              </label>
+              <input type="text" name="title" id="title" required 
+                     class="form-control <?php echo (!empty($errors['title'])?'is-invalid':''); ?>" 
+                     value="<?php echo htmlspecialchars($bookTitle)?>" 
+                     placeholder="Zadejte název knihy">
+              <?php
+                if (!empty($errors['title'])){
+                  echo '<div class="invalid-feedback">'.$errors['title'].'</div>';
+                }
+              ?>
+            </div>
 
-    <div class="form-group">
-      <label for="description">Popis knihy:</label>
-      <textarea name="description" id="description" required class="form-control <?php echo (!empty($errors['description'])?'is-invalid':''); ?>"><?php echo htmlspecialchars($bookDescription)?></textarea>
-      <?php
-        if (!empty($errors['description'])){
-          echo '<div class="invalid-feedback">'.$errors['description'].'</div>';
-        }
-      ?>
-    </div>
+            <div class="col-md-4">
+              <label for="year" class="form-label fw-semibold">
+                <i class="bi bi-calendar me-1"></i>Rok vydání
+              </label>
+              <input type="number" name="year" id="year" required 
+                     class="form-control <?php echo (!empty($errors['year'])?'is-invalid':''); ?>" 
+                     value="<?php echo htmlspecialchars($bookYear); ?>" 
+                     placeholder="2024" min="0" max="9999">
+              <?php
+                if (!empty($errors['year'])){
+                  echo '<div class="invalid-feedback">'.$errors['year'].'</div>';
+                }
+              ?>
+            </div>
 
-    
-    <div class="form-group">
-      <label for="year">Rok vydání:</label>
-      <input type="number" name="year" id="year" required class="form-control <?php echo (!empty($errors['year'])?'is-invalid':''); ?>" value="<?php echo htmlspecialchars($bookYear); ?>">
-      <?php
-        if (!empty($errors['year'])){
-          echo '<div class="invalid-feedback">'.$errors['year'].'</div>';
-        }
-      ?>
-    </div>
+            <div class="col-12">
+              <label for="author" class="form-label fw-semibold">
+                <i class="bi bi-person me-1"></i>Autor
+              </label>
+              <input type="text" name="author" id="author" required 
+                     class="form-control <?php echo (!empty($errors['author'])?'is-invalid':''); ?>" 
+                     value="<?php echo htmlspecialchars($bookAuthor); ?>" 
+                     placeholder="Jméno autora">
+              <?php
+                if (!empty($errors['author'])){
+                  echo '<div class="invalid-feedback">'.$errors['author'].'</div>';
+                }
+              ?>
+            </div>
 
-    <div class="form-group">
-      <label for="author">Autor:</label>
-      <input type="text" name="author" id="author" required class="form-control <?php echo (!empty($errors['author'])?'is-invalid':''); ?>" value="<?php echo htmlspecialchars($bookAuthor); ?>">
-      <?php
-        if (!empty($errors['author'])){
-          echo '<div class="invalid-feedback">'.$errors['author'].'</div>';
-        }
-      ?>
-    </div>
+            <div class="col-12">
+              <label for="description" class="form-label fw-semibold">
+                <i class="bi bi-text-paragraph me-1"></i>Popis knihy
+              </label>
+              <textarea name="description" id="description" required rows="4"
+                        class="form-control <?php echo (!empty($errors['description'])?'is-invalid':''); ?>" 
+                        placeholder="Stručný popis obsahu knihy..."><?php echo htmlspecialchars($bookDescription)?></textarea>
+              <?php
+                if (!empty($errors['description'])){
+                  echo '<div class="invalid-feedback">'.$errors['description'].'</div>';
+                }
+              ?>
+            </div>
 
-    <div class="form-group">
-      <label for="category">Kategorie:</label>
-      <select name="category" id="category" required class="form-control <?php echo (!empty($errors['category'])?'is-invalid':''); ?>">
-        <option value="">Zvolte kategorii</option>
-        <?php
-          $categoryQuery=$db->prepare('SELECT * FROM categories ORDER BY name;');
-          $categoryQuery->execute();
-          $categories=$categoryQuery->fetchAll(PDO::FETCH_ASSOC);
-          if (!empty($categories)){
-            foreach ($categories as $category){
-              echo '<option value="'.$category['category_id'].'" '.($category['category_id']==$bookCategoryId?'selected="selected"':'').'>'.htmlspecialchars($category['name']).'</option>';
-            }
-          }
-        ?>
-      </select>
-      <?php
-        if (!empty($errors['category'])){
-          echo '<div class="invalid-feedback">'.$errors['category'].'</div>';
-        }
-      ?>
-    </div>
+            <div class="col-md-6">
+              <label for="category" class="form-label fw-semibold">
+                <i class="bi bi-tags me-1"></i>Kategorie
+              </label>
+              <select name="category" id="category" required 
+                      class="form-select <?php echo (!empty($errors['category'])?'is-invalid':''); ?>">
+                <option value="">Zvolte kategorii</option>
+                <?php
+                  $categoryQuery=$db->prepare('SELECT * FROM categories ORDER BY name;');
+                  $categoryQuery->execute();
+                  $categories=$categoryQuery->fetchAll(PDO::FETCH_ASSOC);
+                  if (!empty($categories)){
+                    foreach ($categories as $category){
+                      echo '<option value="'.$category['category_id'].'" '.($category['category_id']==$bookCategoryId?'selected="selected"':'').'>'.htmlspecialchars($category['name']).'</option>';
+                    }
+                  }
+                ?>
+              </select>
+              <?php
+                if (!empty($errors['category'])){
+                  echo '<div class="invalid-feedback">'.$errors['category'].'</div>';
+                }
+              ?>
+            </div>
 
+            <div class="col-md-6">
+              <label for="country" class="form-label fw-semibold">
+                <i class="bi bi-globe me-1"></i>Země
+              </label>
+              <select name="country" id="country" required 
+                      class="form-select <?php echo (!empty($errors['country'])?'is-invalid':''); ?>">
+                <option value="">Zvolte zemi</option>
+                <?php
+                  $countryQuery=$db->prepare('SELECT * FROM countries ORDER BY name;');
+                  $countryQuery->execute();
+                  $countries=$countryQuery->fetchAll(PDO::FETCH_ASSOC);
+                  if (!empty($countries)){
+                    foreach ($countries as $country){
+                      echo '<option value="'.$country['country_id'].'" '.($country['country_id']==$bookCountryId?'selected="selected"':'').'>'.htmlspecialchars($country['name']).'</option>';
+                    }
+                  }
+                ?>
+              </select>
+              <?php
+                if (!empty($errors['country'])){
+                  echo '<div class="invalid-feedback">'.$errors['country'].'</div>';
+                }
+              ?>
+            </div>
 
-    <div class="form-group">
-      <label for="country">Země:</label>
-      <select name="country" id="country" required class="form-control <?php echo (!empty($errors['country'])?'is-invalid':''); ?>">
-        <option value="">Zvolte zemi</option>
-        <?php
-          $countryQuery=$db->prepare('SELECT * FROM countries ORDER BY name;');
-          $countryQuery->execute();
-          $countries=$countryQuery->fetchAll(PDO::FETCH_ASSOC);
-          if (!empty($countries)){
-            foreach ($countries as $country){
-              echo '<option value="'.$country['country_id'].'" '.($country['country_id']==$bookCountryId?'selected="selected"':'').'>'.htmlspecialchars($country['name']).'</option>';
-            }
-          }
-        ?>
-      </select>
-      <?php
-        if (!empty($errors['country'])){
-          echo '<div class="invalid-feedback">'.$errors['country'].'</div>';
-        }
-      ?>
-    </div>
-    <div class="form-group">
-      <label for="image">Náhled knížky:</label>
-      <?php if (!empty($bookImage)){ ?>
-          <div>
-                <img src="covers/<?php echo htmlspecialchars($bookImage); ?>" style="max-width:200px; max-height:200px;" alt="Náhled obálky">
+            <div class="col-12">
+              <label for="image" class="form-label fw-semibold">
+                <i class="bi bi-image me-1"></i>Náhled knihy
+              </label>
+              <?php if (!empty($bookImage)){ ?>
+                <div class="mb-3">
+                  <div class="border rounded p-2 bg-light d-inline-block">
+                    <img src="covers/<?php echo htmlspecialchars($bookImage); ?>" 
+                         style="max-width:150px; max-height:200px; object-fit: cover;" 
+                         alt="Náhled obálky" class="rounded">
+                  </div>
+                  <div class="text-muted small mt-1">Aktuální obrázek</div>
+                </div>
+              <?php } ?>
+              <input type="file" name="image" id="image" accept="image/*"
+                     class="form-control <?php echo (!empty($errors['image']) ? 'is-invalid' : ''); ?>" />
+              <div class="form-text">
+                <i class="bi bi-info-circle me-1"></i>
+                Podporované formáty: JPG, PNG, GIF, WebP. Maximální velikost: 2MB
+                <?php if (!$bookId): ?>
+                  <br><i class="bi bi-lightbulb me-1"></i>
+                  Pokud nenahraje obrázek, použije se výchozí náhled
+                <?php endif; ?>
+              </div>
+              <?php if (!empty($errors['image'])) { ?>
+                <div class="invalid-feedback"><?php echo $errors['image']; ?></div>
+              <?php }; ?>
+            </div>
           </div>
-      <?php } ?>
-      <input type="file" name="image" id="image" class="form-control <?php echo (!empty($errors['image']) ? 'is-invalid' : ''); ?>" />
-      <?php if (!empty($errors['image'])) { ?>
-          <div class="invalid-feedback"><?php echo $errors['image']; ?></div>
-      <?php }; ?>
+
+          <hr class="my-4">
+
+          <div class="d-flex gap-2 justify-content-end">
+            <a href="index.php" class="btn btn-outline-secondary">
+              <i class="bi bi-x-circle me-1"></i>Zrušit
+            </a>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-check-circle me-1"></i>
+              <?php echo $bookId ? 'Aktualizovat' : 'Vytvořit'; ?>
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-
-
-    <button type="submit" class="btn btn-primary">Uložit</button>
-    <a href="index.php" class="btn btn-light">Zrušit</a>
-  </form>
+  </div>
+</div>
 
 <?php
   //vložíme do stránek patičku
   include 'inc/footer.php';
+?>

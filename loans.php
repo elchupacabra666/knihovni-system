@@ -45,70 +45,153 @@
 
     $stmt = $db->prepare('UPDATE books SET available = 1 WHERE book_id = :book_id');
     $stmt->execute([':book_id' => $bookId]);
-    if (0) {header("Location: ".$_SERVER['REQUEST_URI']);
-    exit();}
+    header("Location: ".$_SERVER['REQUEST_URI']);
+    exit();
   }
 
-                          
+            
   include 'inc/header.php';  
 
   
 ?>
-  <h2>Uživatel: <?php echo $name?> (<?php echo $email?>)</h2>
 
-  <h3>Aktivní výpůjčky</h3>
-    <?php
-      echo '<div>';
-      foreach ($loans as $loan) {
-        if ($loan['returned'] == 0) {
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-info text-white">
+        <h4 class="card-title mb-0">
+            <i class="bi bi-person-circle me-2"></i>
+            <?php echo htmlspecialchars($name); ?>
+        </h4>
+        <small class="opacity-75">
+            <i class="bi bi-envelope me-1"></i><?php echo htmlspecialchars($email); ?>
+        </small>
+    </div>
+</div>
 
-          echo '<li>';
-          echo  'Kniha: '.$loan['title'];
-          echo  '<br>';
-          echo  'Od: '.date("d.m.Y", strtotime($loan['start_date']));
-          echo  '<br>';
-          echo  'Do: '.date("d.m.Y", strtotime($loan['end_date']));
-          if (strtotime($loan['end_date']) < strtotime(date('Y-m-d'))) {
-            echo '<br><p class="text-danger">Kniha ještě nebyla vrácena!</p>';
-          }
-          echo '</li>';
-          
-          if ($_SESSION['user_role'] == 'admin') {
-            echo '<form method="post" style="display:inline;">
-                <input type="hidden" name="extend_loan_id" value="'.$loan['loan_id'].'">
-                <button type="submit" class="btn-sm btn-success">Prodloužit</button>
-            </form>';
-            echo '<form method="post">
-                <input type="hidden" name="finish_loan_id" value="'.$loan['loan_id'].'">
-                <button type="submit" class="btn-sm btn-danger">Ukončit</button>
-            </form>';
-          }
-        }
-      }
-      echo '</div>';
-    ?>
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-clock me-2"></i>Aktivní výpůjčky
+                </h5>
+            </div>
+            <div class="card-body">
+                <?php
+                $activeLoans = array_filter($loans, function($loan) {
+                    return $loan['returned'] == 0;
+                });
+                
+                if (!empty($activeLoans)): ?>
+                    <div class="row g-3">
+                        <?php foreach ($activeLoans as $loan): ?>
+                            <div class="col-12">
+                                <div class="card border-start border-warning border-3">
+                                    <div class="card-body p-3">
+                                        <h6 class="card-title fw-bold">
+                                            <i class="bi bi-book me-1"></i>
+                                            <?php echo htmlspecialchars($loan['title']); ?>
+                                        </h6>
+                                        <div class="row text-muted small">
+                                            <div class="col-6">
+                                                <i class="bi bi-calendar-plus me-1"></i>
+                                                Od: <?php echo date("d.m.Y", strtotime($loan['start_date'])); ?>
+                                            </div>
+                                            <div class="col-6">
+                                                <i class="bi bi-calendar-x me-1"></i>
+                                                Do: <?php echo date("d.m.Y", strtotime($loan['end_date'])); ?>
+                                            </div>
+                                        </div>
+                                        
+                                        <?php if (strtotime($loan['end_date']) < strtotime(date('Y-m-d'))): ?>
+                                            <div class="alert alert-danger mt-2 mb-2 py-2">
+                                                <i class="bi bi-exclamation-triangle me-1"></i>
+                                                <small><strong>Kniha ještě nebyla vrácena!</strong></small>
+                                            </div>
+                                        <?php endif; ?>
+                                        
+                                        <?php if ($_SESSION['user_role'] == 'admin'): ?>
+                                            <div class="d-flex gap-2 mt-2">
+                                                <form method="post" style="display:inline;">
+                                                    <input type="hidden" name="extend_loan_id" value="<?php echo $loan['loan_id']; ?>">
+                                                    <button type="submit" class="btn btn-sm btn-outline-success">
+                                                        <i class="bi bi-arrow-clockwise me-1"></i>Prodloužit
+                                                    </button>
+                                                </form>
+                                                <form method="post" style="display:inline;">
+                                                    <input type="hidden" name="finish_loan_id" value="<?php echo $loan['loan_id']; ?>">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        <i class="bi bi-check-circle me-1"></i>Ukončit
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="text-center text-muted py-4">
+                        <i class="bi bi-inbox fs-1 mb-2"></i>
+                        <p class="mb-0">Žádné aktivní výpůjčky</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
 
-  <h3>Neaktivní výpůjčky</h3>
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-check-circle me-2"></i>Historie výpůjček
+                </h5>
+            </div>
+            <div class="card-body">
+                <?php
+                $returnedLoans = array_filter($loans, function($loan) {
+                    return $loan['returned'] == 1;
+                });
+                
+                if (!empty($returnedLoans)): ?>
+                    <div class="row g-3">
+                        <?php foreach ($returnedLoans as $loan): ?>
+                            <div class="col-12">
+                                <div class="card border-start border-secondary border-3">
+                                    <div class="card-body p-3">
+                                        <h6 class="card-title">
+                                            <i class="bi bi-book me-1"></i>
+                                            <?php echo htmlspecialchars($loan['title']); ?>
+                                        </h6>
+                                        <div class="row text-muted small">
+                                            <div class="col-6">
+                                                <i class="bi bi-calendar-plus me-1"></i>
+                                                Od: <?php echo date("d.m.Y", strtotime($loan['start_date'])); ?>
+                                            </div>
+                                            <div class="col-6">
+                                                <i class="bi bi-calendar-check me-1"></i>
+                                                Do: <?php echo date("d.m.Y", strtotime($loan['end_date'])); ?>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2">
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check me-1"></i>Vráceno
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="text-center text-muted py-4">
+                        <i class="bi bi-archive fs-1 mb-2"></i>
+                        <p class="mb-0">Žádná historie výpůjček</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <?php
-      echo '<div>';
-      foreach ($loans as $loan) {
-        if ($loan['returned'] == 1) {
-
-          echo '<li>';
-          echo  'Kniha: '.$loan['title'];
-          echo  '<br>';
-          echo  'Od: '.date("d.m.Y", strtotime($loan['start_date']));
-          echo  '<br>';
-          echo  'Do: '.date("d.m.Y", strtotime($loan['end_date']));
-          echo '</li>';
-          
-        }
-      }
-      echo '</div>';
-    ?>
-
-    </main>
-    <script src="assets/search_books.js"></script>
-  </body>
-</html>
+<?php include 'inc/footer.php'; ?>

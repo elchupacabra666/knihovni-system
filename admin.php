@@ -9,8 +9,6 @@
     
     // categories
 
-
-
     $categoryQuery=$db->prepare('SELECT * FROM categories ORDER BY category_id;');
     $categoryQuery->execute();
     $categories=$categoryQuery->fetchAll(PDO::FETCH_ASSOC);
@@ -244,228 +242,327 @@
         }
     }
 
-
     include 'inc/header.php';
-
 ?>
 
-    <div class="container">
-        <ul class="nav nav-tabs">
-            <li class="nav-item"><a class="nav-link <?php echo @$_GET['tab']=='categories' || empty(@$_GET['tab'])?'active':''?>" href="?tab=categories" data-toggle="tab">Kategorie</a></li>
-            <li class="nav-item"><a class="nav-link <?php echo @$_GET['tab']=='countries'?'active':''?>" href="?tab=countries" data-toggle="tab">Země</a></li>
-            <li class="nav-item"><a class="nav-link <?php echo @$_GET['tab']=='users'?'active':''?>" href="?tab=users" data-toggle="tab">Uživatelé</a></li>
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-primary text-white">
+        <h4 class="card-title mb-0">
+            <i class="bi bi-gear me-2"></i>Administrace
+        </h4>
+    </div>
+    <div class="card-body p-0">
+        <ul class="nav nav-tabs nav-fill border-0">
+            <li class="nav-item">
+                <a class="nav-link <?php echo @$_GET['tab']=='categories' || empty(@$_GET['tab'])?'active':''?>" href="?tab=categories">
+                    <i class="bi bi-tags me-1"></i>Kategorie
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?php echo @$_GET['tab']=='countries'?'active':''?>" href="?tab=countries">
+                    <i class="bi bi-globe me-1"></i>Země
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?php echo @$_GET['tab']=='users'?'active':''?>" href="?tab=users">
+                    <i class="bi bi-people me-1"></i>Uživatelé
+                </a>
+            </li>
         </ul>
 
-        
-
-        <div class="tab-content pt-3">
+        <div class="tab-content p-4">
             <div class="tab-pane fade show <?php echo @$_GET['tab']=='categories' || empty(@$_GET['tab'])?'active':''?>" id="categories">
-
-                <!-- Přidání nové kategorie -->
-                <form method="post" class="form-inline mb-3">
-                    <div class="form-group">
-                        <label class="m-2"for="new_category_name">Přidání nové kategorie: </label>
-                        <input type="text" name="new_category_name" class="form-control<?php echo !empty($errors['new_category']) ? ' is-invalid' : ''; ?>" placeholder="Nová kategorie" required>
-                        <?php if (!empty($errors['new_category'])): ?>
-                            <div class="invalid-feedback"><?php echo $errors['new_category']; ?></div>
-                        <?php endif; ?>
-                    </div>
-                    <button type="submit" class="btn btn-primary ml-2">Přidat</button>
-                </form>
-                      
-                <!-- Výpiš všech kategorií -->
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Název</th>
-                            <th>Akce</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (!empty($categories)): ?> <!-- každou kategorii buď vypíšu normálně s buttonem na upravení/smazání, nebo jí vypíšu jako input (když jsem v editaci jakoby) -->
-                            <?php foreach ($categories as $category): ?>
-                                <?php if (!empty($_GET['edit_category']) && $_GET['edit_category'] == $category['category_id']): ?>
-                                    <tr>
-                                        <form method="post">
-                                            <input type="hidden" id="category_id" name="category_id" value="<?php echo htmlspecialchars($category['category_id']); ?>"/>
-                                            <td><?php echo $category['category_id']; ?></td>
-                                            <td>
-                                                <input type="text" id="category_name" name="category_name" required class="form-control<?php echo !empty($errors['category']) ? ' is-invalid' : ''; ?>" value="<?php echo htmlspecialchars($categoryName); ?>">
-                                                <?php if (!empty($errors['category'])): ?>
-                                                    <div class="invalid-feedback"><?php echo $errors['category']; ?></div>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td>
-                                                <button type="submit" name="save_category" class="btn btn-sm btn-success">Uložit</button>
-                                                <a href="?tab=categories" role="button" class="btn btn-sm btn-secondary">Zrušit</a>
-                                            </td>
-                                        </form>
-                                    </tr>
-                                <?php else: ?>
-                                    <tr>
-                                        <td><?php echo htmlspecialchars($category['category_id']); ?></td>
-                                        <td><?php echo htmlspecialchars($category['name']); ?></td>
-                                        <td>
-                                            <a role="button" href="?tab=categories&edit_category=<?php echo htmlspecialchars($category['category_id']); ?>" class="btn btn-sm btn-warning">Upravit</a>
-                                            <form method="post" style="display:inline;" onsubmit="return confirm('Opravdu smazat?');">
-                                                <input type="hidden" name="delete_category_id" value="<?php echo htmlspecialchars($category['category_id']); ?>">
-                                                <button type="submit" class="btn btn-sm btn-danger">Smazat</button>
-                                            </form>
-                                        </td>
-                                    </tr>
+                <div class="card border-0 bg-light mb-4">
+                    <div class="card-body">
+                        <h6 class="card-title"><i class="bi bi-plus-circle me-1"></i>Přidat novou kategorii</h6>
+                        <form method="post" class="row g-3 align-items-end">
+                            <div class="col-md-8">
+                                <input type="text" name="new_category_name" 
+                                       class="form-control<?php echo !empty($errors['new_category']) ? ' is-invalid' : ''; ?>" 
+                                       placeholder="Název nové kategorie" required>
+                                <?php if (!empty($errors['new_category'])): ?>
+                                    <div class="invalid-feedback"><?php echo $errors['new_category']; ?></div>
                                 <?php endif; ?>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr><td colspan="3">Žádné kategorie</td></tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="bi bi-plus me-1"></i>Přidat
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="80">ID</th>
+                                <th>Název</th>
+                                <th width="200">Akce</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (!empty($categories)): ?>
+                                <?php foreach ($categories as $category): ?>
+                                    <?php if (!empty($_GET['edit_category']) && $_GET['edit_category'] == $category['category_id']): ?>
+                                        <tr class="table-warning">
+                                            <form method="post">
+                                                <input type="hidden" name="category_id" value="<?php echo htmlspecialchars($category['category_id']); ?>"/>
+                                                <td><?php echo $category['category_id']; ?></td>
+                                                <td>
+                                                    <input type="text" name="category_name" required 
+                                                           class="form-control<?php echo !empty($errors['category']) ? ' is-invalid' : ''; ?>" 
+                                                           value="<?php echo htmlspecialchars($categoryName); ?>">
+                                                    <?php if (!empty($errors['category'])): ?>
+                                                        <div class="invalid-feedback"><?php echo $errors['category']; ?></div>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <button type="submit" class="btn btn-sm btn-success">
+                                                            <i class="bi bi-check"></i>
+                                                        </button>
+                                                        <a href="?tab=categories" class="btn btn-sm btn-secondary">
+                                                            <i class="bi bi-x"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </form>
+                                        </tr>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td><?php echo htmlspecialchars($category['category_id']); ?></td>
+                                            <td><?php echo htmlspecialchars($category['name']); ?></td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="?tab=categories&edit_category=<?php echo htmlspecialchars($category['category_id']); ?>" 
+                                                       class="btn btn-sm btn-outline-primary">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <form method="post" style="display:inline;" onsubmit="return confirm('Opravdu smazat?');">
+                                                        <input type="hidden" name="delete_category_id" value="<?php echo htmlspecialchars($category['category_id']); ?>">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr><td colspan="3" class="text-center text-muted">Žádné kategorie</td></tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
             <div class="tab-pane fade show <?php echo @$_GET['tab']=='countries'?'active':''?>" id="countries">
-                <!-- Přidání nové země -->
-                <form method="post" class="form-inline mb-3">
-                    <div class="form-group">
-                        <label for="new_country_name" class="m-2">Přídání nové země:</label>
-                        <input type="text" name="new_country_name" class="form-control<?php echo !empty($errors['new_country']) ? ' is-invalid' : ''; ?>" placeholder="Nová země" required>
-                        <?php if (!empty($errors['new_country'])): ?>
-                            <div class="invalid-feedback"><?php echo $errors['new_country']; ?></div>
-                        <?php endif; ?>
+                <div class="card border-0 bg-light mb-4">
+                    <div class="card-body">
+                        <h6 class="card-title"><i class="bi bi-plus-circle me-1"></i>Přidat novou zemi</h6>
+                        <form method="post" class="row g-3 align-items-end">
+                            <div class="col-md-8">
+                                <input type="text" name="new_country_name" 
+                                       class="form-control<?php echo !empty($errors['new_country']) ? ' is-invalid' : ''; ?>" 
+                                       placeholder="Název nové země" required>
+                                <?php if (!empty($errors['new_country'])): ?>
+                                    <div class="invalid-feedback"><?php echo $errors['new_country']; ?></div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="bi bi-plus me-1"></i>Přidat
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                    <button type="submit" class="btn btn-primary ml-2">Přidat</button>
-                </form>
+                </div>
 
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Název</th>
-                            <th>Akce</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (!empty($countries)): ?>
-                            <?php foreach ($countries as $country): ?>
-                                <?php if (!empty($_GET['edit_country']) && $_GET['edit_country'] == $country['country_id']): ?>
-                                    <tr>
-                                        <form method="post">
-                                            <input type="hidden" name="country_id" value="<?php echo htmlspecialchars($country['country_id']); ?>"/>
-                                            <td><?php echo $country['country_id']; ?></td>
-                                            <td>
-                                                <input type="text" name="country_name" required class="form-control<?php echo !empty($errors['country']) ? ' is-invalid' : ''; ?>" value="<?php echo htmlspecialchars($countryName); ?>">
-                                                <?php if (!empty($errors['country'])): ?>
-                                                    <div class="invalid-feedback"><?php echo $errors['country']; ?></div>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td>
-                                                <button type="submit" class="btn btn-sm btn-success">Uložit</button>
-                                                <a href="?tab=countries" class="btn btn-sm btn-secondary">Zrušit</a>
-                                            </td>
-                                        </form>
-                                    </tr>
-                                <?php else: ?>
-                                    <tr>
-                                        <td><?php echo htmlspecialchars($country['country_id']); ?></td>
-                                        <td><?php echo htmlspecialchars($country['name']); ?></td>
-                                        <td>
-                                            <a href="?tab=countries&edit_country=<?php echo htmlspecialchars($country['country_id']); ?>" class="btn btn-sm btn-warning">Upravit</a>
-                                            <form method="post" style="display:inline;" onsubmit="return confirm('Opravdu smazat?');">
-                                                <input type="hidden" name="delete_country_id" value="<?php echo htmlspecialchars($country['country_id']); ?>">
-                                                <button type="submit" class="btn btn-sm btn-danger">Smazat</button>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="80">ID</th>
+                                <th>Název</th>
+                                <th width="200">Akce</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (!empty($countries)): ?>
+                                <?php foreach ($countries as $country): ?>
+                                    <?php if (!empty($_GET['edit_country']) && $_GET['edit_country'] == $country['country_id']): ?>
+                                        <tr class="table-warning">
+                                            <form method="post">
+                                                <input type="hidden" name="country_id" value="<?php echo htmlspecialchars($country['country_id']); ?>"/>
+                                                <td><?php echo $country['country_id']; ?></td>
+                                                <td>
+                                                    <input type="text" name="country_name" required 
+                                                           class="form-control<?php echo !empty($errors['country']) ? ' is-invalid' : ''; ?>" 
+                                                           value="<?php echo htmlspecialchars($countryName); ?>">
+                                                    <?php if (!empty($errors['country'])): ?>
+                                                        <div class="invalid-feedback"><?php echo $errors['country']; ?></div>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <button type="submit" class="btn btn-sm btn-success">
+                                                            <i class="bi bi-check"></i>
+                                                        </button>
+                                                        <a href="?tab=countries" class="btn btn-sm btn-secondary">
+                                                            <i class="bi bi-x"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
                                             </form>
+                                        </tr>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td><?php echo htmlspecialchars($country['country_id']); ?></td>
+                                            <td><?php echo htmlspecialchars($country['name']); ?></td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="?tab=countries&edit_country=<?php echo htmlspecialchars($country['country_id']); ?>" 
+                                                       class="btn btn-sm btn-outline-primary">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <form method="post" style="display:inline;" onsubmit="return confirm('Opravdu smazat?');">
+                                                        <input type="hidden" name="delete_country_id" value="<?php echo htmlspecialchars($country['country_id']); ?>">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr><td colspan="3" class="text-center text-muted">Žádné země</td></tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-pane fade show <?php echo @$_GET['tab']=='users'?'active':''?>" id="users">
+                <div class="card border-0 bg-light mb-4">
+                    <div class="card-body">
+                        <h6 class="card-title"><i class="bi bi-person-plus me-1"></i>Přidat nového uživatele</h6>
+                        <form method="post">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="new_user_name" class="form-label">Jméno</label>
+                                    <input type="text" name="new_user_name" id="new_user_name"
+                                           class="form-control<?php echo !empty($errors['new_user_name']) ? ' is-invalid' : ''; ?>" 
+                                           placeholder="Jméno uživatele" required>
+                                    <?php if (!empty($errors['new_user_name'])): ?>
+                                        <div class="invalid-feedback"><?php echo $errors['new_user_name']; ?></div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="new_user_email" class="form-label">Email</label>
+                                    <input type="email" name="new_user_email" id="new_user_email"
+                                           class="form-control<?php echo !empty($errors['new_user_email']) ? ' is-invalid' : ''; ?>" 
+                                           placeholder="email@example.com" required>
+                                    <?php if (!empty($errors['new_user_email'])): ?>
+                                        <div class="invalid-feedback"><?php echo $errors['new_user_email']; ?></div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="new_user_password" class="form-label">Heslo</label>
+                                    <input type="password" name="new_user_password" id="new_user_password"
+                                           class="form-control<?php echo (!empty($errors['new_user_password']) || !empty($errors['new_user_password_length']) || !empty($errors['new_user_password_upper']) || !empty($errors['new_user_password_number']) || !empty($errors['new_user_password_special'])) ? ' is-invalid' : ''; ?>" 
+                                           placeholder="Heslo" required>
+                                    <?php 
+                                    $passwordErrors = array_filter([
+                                        $errors['new_user_password'] ?? '',
+                                        $errors['new_user_password_length'] ?? '',
+                                        $errors['new_user_password_upper'] ?? '',
+                                        $errors['new_user_password_number'] ?? '',
+                                        $errors['new_user_password_special'] ?? ''
+                                    ]);
+                                    if (!empty($passwordErrors)): ?>
+                                        <div class="invalid-feedback">
+                                            <?php echo implode('<br>', $passwordErrors); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="new_user_password2" class="form-label">Heslo znovu</label>
+                                    <input type="password" name="new_user_password2" id="new_user_password2"
+                                           class="form-control<?php echo !empty($errors['new_user_password2']) ? ' is-invalid' : ''; ?>" 
+                                           placeholder="Zadejte heslo znovu" required>
+                                    <?php if (!empty($errors['new_user_password2'])): ?>
+                                        <div class="invalid-feedback"><?php echo $errors['new_user_password2']; ?></div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="bi bi-plus me-1"></i>Přidat uživatele
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="60">ID</th>
+                                <th>Jméno</th>
+                                <th>Email</th>
+                                <th width="100">Role</th>
+                                <th width="250">Akce</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (!empty($users)): ?>
+                                <?php foreach ($users as $user): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($user['user_id']); ?></td>
+                                        <td><?php echo htmlspecialchars($user['name']); ?></td>
+                                        <td><?php echo htmlspecialchars($user['email']); ?></td>
+                                        <td>
+                                            <span class="badge <?php echo $user['role'] == 'admin' ? 'bg-danger' : 'bg-secondary'; ?>">
+                                                <?php echo htmlspecialchars($user['role']); ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="?tab=users&edit_user=<?php echo htmlspecialchars($user['user_id']); ?>" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a href="loans.php?user=<?php echo htmlspecialchars($user['user_id']); ?>" 
+                                                   class="btn btn-sm btn-outline-info">
+                                                    <i class="bi bi-journal-bookmark"></i>
+                                                </a>
+                                                <form method="post" style="display:inline;" onsubmit="return confirm('Opravdu smazat?');">
+                                                    <input type="hidden" name="delete_user_id" value="<?php echo htmlspecialchars($user['user_id']); ?>">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr><td colspan="3">Žádné země</td></tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
-            <div class="tab-pane fade show <?php echo @$_GET['tab']=='users'?'active':''?>" id="users">
-                <!-- Přidání nového uživatele -->
-                <form method="post" class="mb-3">
-                    <div class="form-group mr-2">
-                        <label for="new_user_name" class="m-2">Jméno:</label>
-                        <input type="text" name="new_user_name" class="m-2 form-control<?php echo !empty($errors['new_user_name']) ? ' is-invalid' : ''; ?>" placeholder="Jméno" required>
-                        <label for="new_user_email" class="m-2">Email:</label>
-                        <input type="email" name="new_user_email" class="m-2 form-control<?php echo !empty($errors['new_user_email']) ? ' is-invalid' : ''; ?>" placeholder="Email" required>
-                        <?php if (!empty($errors['new_user_email'])): ?>
-                            <div class="invalid-feedback d-block"><?php echo $errors['new_user_email']; ?></div>
-                        <?php endif; ?>
-                        <?php if (!empty($errors['new_user_role'])): ?>
-                            <div class="invalid-feedback d-block"><?php echo $errors['new_user_role']; ?></div>
-                        <?php endif; ?>
-                    </div>
-
-                    <div class="form-group mr-2">
-                        <label for="new_user_password" class="m-2">Heslo:</label>
-                        <input type="password" name="new_user_password" class="form-control<?php echo (!empty($errors['new_user_password']) || !empty($errors['new_user_password_length']) || !empty($errors['new_user_password_upper']) || !empty($errors['new_user_password_number']) || !empty($errors['new_user_password_special'])) ? ' is-invalid' : ''; ?>" placeholder="Heslo" required>
-                        <?php if (!empty($errors['new_user_password'])): ?>
-                            <div class="invalid-feedback d-block"><?php echo $errors['new_user_password']; ?></div>
-                        <?php endif; ?>
-                        <?php if (!empty($errors['new_user_password_length'])): ?>
-                            <div class="invalid-feedback d-block"><?php echo $errors['new_user_password_length']; ?></div>
-                        <?php endif; ?>
-                        <?php if (!empty($errors['new_user_password_upper'])): ?>
-                            <div class="invalid-feedback d-block"><?php echo $errors['new_user_password_upper']; ?></div>
-                        <?php endif; ?>
-                        <?php if (!empty($errors['new_user_password_number'])): ?>
-                            <div class="invalid-feedback d-block"><?php echo $errors['new_user_password_number']; ?></div>
-                        <?php endif; ?>
-                        <?php if (!empty($errors['new_user_password_special'])): ?>
-                            <div class="invalid-feedback d-block"><?php echo $errors['new_user_password_special']; ?></div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="form-group mr-2">
-                        <label for="new_user_password2" class="m-2">Heslo znovu:</label>
-                        <input type="password" name="new_user_password2" class="form-control<?php echo !empty($errors['new_user_password2']) ? ' is-invalid' : ''; ?>" placeholder="Zadejte heslo znovu" required>
-                        <?php if (!empty($errors['new_user_password2'])): ?>
-                            <div class="invalid-feedback d-block"><?php echo $errors['new_user_password2']; ?></div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary">Přidat</button>
-                    </div>
-                </form>
-
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Jméno</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Akce</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (!empty($users)): ?>
-                            <?php foreach ($users as $user): ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($user['user_id']); ?></td>
-                                    <td><?php echo htmlspecialchars($user['name']); ?></td>
-                                    <td><?php echo htmlspecialchars($user['email']); ?></td>
-                                    <td><?php echo htmlspecialchars($user['role']); ?></td>
-                                    <td>
-                                        <a href="?tab=users&edit_user=<?php echo htmlspecialchars($user['user_id']); ?>" class="btn btn-sm btn-warning">Upravit</a>
-                                        <a href="loans.php?user=<?php echo htmlspecialchars($user['user_id']); ?>" class="btn btn-sm btn-info">Výpůjčky</a>
-                                        <form method="post" style="display:inline;" onsubmit="return confirm('Opravdu smazat?');">
-                                            <input type="hidden" name="delete_user_id" value="<?php echo htmlspecialchars($user['user_id']); ?>">
-                                            <button type="submit" class="btn btn-sm btn-danger">Smazat</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr><td colspan="5">Žádní uživatelé</td></tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr><td colspan="5" class="text-center text-muted">Žádní uživatelé</td></tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
+</div>
+
 <?php
-    //vložíme do stránek patičku
     include 'inc/footer.php';
+?>
