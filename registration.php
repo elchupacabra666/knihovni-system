@@ -12,50 +12,54 @@
   if (!empty($_POST)){
     #region zpracování formuláře
     #region kontrola jména
-    $name=trim(@$_POST['name']);
-    if (empty($name)){
-      $errors['name']='Musíte zadat své jméno či přezdívku.';
-    }
-    #endregion kontrola jména
 
-    #region kontrola emailu
-    $email=trim(@$_POST['email']);
-    if (!filter_var($email,FILTER_VALIDATE_EMAIL)){
-      $errors['email']='Musíte zadat platnou e-mailovou adresu.';
-    }else{
-      //kontrola, jestli již není e-mail registrovaný
-      $mailQuery=$db->prepare('SELECT * FROM users WHERE email=:email LIMIT 1;');
-      $mailQuery->execute([
-        ':email'=>$email
-      ]);
-      if ($mailQuery->rowCount()>0){
-        $errors['email']='Uživatelský účet s touto e-mailovou adresou již existuje.';
+    $name = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $newUserPassword = $_POST['password'] ?? '';
+    $password2 = $_POST['password2'] ?? '';
+
+    // Kontrola jména
+    if (empty($name)) {
+      $errors['name'] = 'Zadejte jméno uživatele.';
+    } elseif (mb_strlen($name) > 100) {
+      $errors['name'] = 'Jméno nesmí být delší než 100 znaků.';
+    }
+
+    // Kontrola emailu
+    if (empty($email)) {
+      $errors['email'] = 'Zadejte email.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      $errors['email'] = 'Neplatný email.';
+    } elseif (mb_strlen($email) > 255) {
+      $errors['email'] = 'Email nesmí být delší než 255 znaků.';
+    } else {
+      $checkQuery = $db->prepare('SELECT * FROM users WHERE email = :email LIMIT 1');
+      $checkQuery->execute([':email' => $email]);
+      if ($checkQuery->rowCount() > 0) {
+        $errors['email'] = 'Uživatel s tímto emailem již existuje.';
       }
     }
-    #endregion kontrola emailu
 
-    #region kontrola hesla
-    // Silnější validace hesla
-    $newUserPassword = $_POST['password'];
+    // Kontrola hesla
     if (empty($newUserPassword)) {
       $errors['password'] = 'Zadejte heslo.';
-    } 
-    if (mb_strlen($newUserPassword) < 8) {
+    } elseif (mb_strlen($newUserPassword) < 8) {
       $errors['password'] = 'Heslo musí mít alespoň 8 znaků.';
-    }
-    if (!preg_match('/[A-Z]/', $newUserPassword)) {
+    } elseif (!preg_match('/[A-Z]/', $newUserPassword)) {
       $errors['password'] = 'Heslo musí obsahovat alespoň jedno velké písmeno.';
-    }
-    if (!preg_match('/[0-9]/', $newUserPassword)) {
+    } elseif (!preg_match('/[0-9]/', $newUserPassword)) {
       $errors['password'] = 'Heslo musí obsahovat alespoň jedno číslo.';
-    }
-    if (!preg_match('/[\W_]/', $newUserPassword)) {
+    } elseif (!preg_match('/[\W_]/', $newUserPassword)) {
       $errors['password'] = 'Heslo musí obsahovat alespoň jeden speciální znak.';
     }
-    
-    if ($_POST['password']!=$_POST['password2']){
-      $errors['password2']='Zadaná hesla se neshodují.';
+
+    if (empty($password2)) {
+      $errors['password2'] = 'Zadejte heslo znovu.';
+    } elseif ($newUserPassword !== $password2) {
+      $errors['password2'] = 'Hesla se neshodují.';
     }
+
+
     #endregion kontrola hesla
 
     if (empty($errors)){
@@ -88,6 +92,10 @@
 ?>
 
   <h2>Registrace nového uživatele</h2>
+
+  <div class="alert alert-info">
+    Heslo musí mít alespoň 8 znaků, obsahovat alespoň jedno velké písmeno, jedno číslo a jeden speciální znak.
+  </div>
 
   <form method="post">
     <div class="form-group">

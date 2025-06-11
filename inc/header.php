@@ -19,7 +19,8 @@
           echo '<a href="logout.php" class="text-white">Odhlásit se</a>';
           echo '<br>';
           echo '<a href="loans.php?user='.$_SESSION['user_id'].'" class="text-white">Výpůjčky uživatele</a>';
-
+          echo '<br>';
+          echo '<a href="password-change.php" class="text-white">Změnit heslo</a>';
 
 
           if ($_SESSION['user_role'] == 'admin') {
