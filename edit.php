@@ -16,6 +16,7 @@
   $bookAuthor = '';
   $bookYear = '';
   $bookCountryId = '';
+  $bookUpdatedAt = '';
 
   #region načtení existující knihy z DB
   if (!empty($_GET['id'])){
@@ -31,6 +32,7 @@
       $bookAuthor = $book['author'];
       $bookYear = $book['year'];
       $bookCountryId = $book['country_id'];
+      $bookUpdatedAt = $book['updated_at'];
     }else{
       header('Location: index.php');
       exit();
@@ -132,7 +134,7 @@
       if (empty($errors['image'])) {
         $uploadDirectory = __DIR__ . '/covers/'; 
         if (!is_dir($uploadDirectory)) {
-            mkdir($uploadDirectory, 0770, true);
+            mkdir($uploadDirectory, 0777, true);
         }
         
         $oldImage = $bookImage;
@@ -153,9 +155,9 @@
       #region uložení dat
 
       if ($bookId){
-        #region aktualizace existujícího příspěvku
+        #region aktualizace 
         $saveQuery=$db->prepare('UPDATE books SET title=:title, description=:description, category_id=:category, image=:image, author=:author, year=:year, country_id=:country
-                                  WHERE book_id=:id LIMIT 1;');
+                                  WHERE book_id=:id AND updated_at = :updated_at LIMIT 1;');
         $saveQuery->execute([
           ':title'=>$bookTitle,
           ':description'=>$bookDescription,
@@ -164,11 +166,16 @@
           ':author'=>$bookAuthor,
           ':year'=>$bookYear,
           ':country'=>$bookCountryId,
-          ':id'=>$bookId
+          ':id'=>$bookId,
+          ':updated_at'=>$_POST['updated_at']
         ]);
-        #endregion aktualizace existujícího příspěvku
+
+        if ($saveQuery->rowCount() == 0) {
+          $errors['optimistic_lock'] = 'Kniha byla mezitím změněna jiným uživatelem. Zkuste to znovu.';
+        }
+        #endregion aktualizace
       }else{
-        #region uložení nového příspěvku
+        #region uložení nové knihy
           $saveQuery = $db->prepare('INSERT INTO books (title, description, category_id, image, author, year, country_id) VALUES (:title, :description, :category, :image, :author, :year, :country);');
           $saveQuery->execute([
             ':title' => $bookTitle,
@@ -179,14 +186,15 @@
             ':year' => $bookYear,
             ':country' => $bookCountryId
           ]);
-        #endregion uložení nového příspěvku
+        #endregion uložení nové knihy
       }
 
       #endregion uložení dat
       #region přesměrování
-
+      if (empty($errors)) {
         header('Location: index.php');
         exit();
+      }
 
       
       #endregion přesměrování
@@ -214,8 +222,12 @@
         </h4>
       </div>
       <div class="card-body p-4">
+        <?php if (!empty($errors['optimistic_lock'])): ?>
+          <div class="alert alert-danger"><?php echo $errors['optimistic_lock']; ?></div>
+        <?php endif; ?>
         <form method="post" enctype="multipart/form-data">
-          <input type="hidden" name="id" value="<?php echo $bookId;?>" />
+          <input type="hidden" name="id" value="<?php echo htmlspecialchars($bookId);?>" />
+          <input type="hidden" name="updated_at" value="<?php echo htmlspecialchars($bookUpdatedAt); ?>" />
 
           <div class="row g-3">
             <div class="col-md-8">
@@ -351,9 +363,11 @@
                   Pokud nenahraje obrázek, použije se výchozí náhled
                 <?php endif; ?>
               </div>
-              <?php if (!empty($errors['image'])) { ?>
-                <div class="invalid-feedback"><?php echo $errors['image']; ?></div>
-              <?php }; ?>
+                <?php
+                if (!empty($errors['image'])) {
+                  echo '<div class="invalid-feedback">' . $errors['image'] . '</div>';
+                }
+                ?>
             </div>
           </div>
 

@@ -27,34 +27,58 @@
 
         <div class="collapse navbar-collapse" id="navbarNav">
           <div class="navbar-nav ms-auto">
-            <?php
-            if (!empty($_SESSION['user_id'])) {
-              echo '<div class="nav-item dropdown">';
-              echo '<a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">';
-              echo '<i class="bi bi-person-circle me-2"></i>';
-              echo '<strong>' . htmlspecialchars($_SESSION['user_name']) . '</strong>';
-              echo '</a>';
-              echo '<ul class="dropdown-menu dropdown-menu-end">';
-              echo '<li><a class="dropdown-item" href="loans.php?user=' . $_SESSION['user_id'] . '"><i class="bi bi-journal-bookmark me-2"></i>Výpůjčky uživatele</a></li>';
-              echo '<li><a class="dropdown-item" href="password-change.php"><i class="bi bi-key me-2"></i>Změnit heslo</a></li>';
-
-              if ($_SESSION['user_role'] == 'admin') {
-                echo '<li><hr class="dropdown-divider"></li>';
-                echo '<li><h6 class="dropdown-header">Administrace</h6></li>';
-                echo '<li><a class="dropdown-item" href="new-loan.php"><i class="bi bi-plus-circle me-2"></i>Nová výpůjčka</a></li>';
-                echo '<li><a class="dropdown-item" href="admin.php"><i class="bi bi-gear me-2"></i>Správce</a></li>';
-                echo '<li><a class="dropdown-item" href="edit.php"><i class="bi bi-book-half me-2"></i>Nová kniha</a></li>';
-              }
-
-              echo '<li><hr class="dropdown-divider"></li>';
-              echo '<li><a class="dropdown-item text-danger" href="logout.php"><i class="bi bi-box-arrow-right me-2"></i>Odhlásit se</a></li>';
-              echo '</ul>';
-              echo '</div>';
-            } else {
-              echo '<a href="login.php" class="nav-link"><i class="bi bi-box-arrow-in-right me-2"></i>Přihlásit se</a>';
-              echo '<a href="registration.php" class="nav-link"><i class="bi bi-person-plus me-2"></i>Registrovat se</a>';
-            }
-            ?>
+              <?php if (!empty($_SESSION['user_id'])): ?>
+              <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                  <i class="bi bi-person-circle me-2"></i>
+                  <strong><?php echo htmlspecialchars($_SESSION['user_name']); ?></strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li>
+                    <a class="dropdown-item" href="loans.php?user=<?php echo $_SESSION['user_id']; ?>">
+                      <i class="bi bi-journal-bookmark me-2"></i>Výpůjčky uživatele
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="password-change.php">
+                      <i class="bi bi-key me-2"></i>Změnit heslo
+                    </a>
+                  </li>
+                  <?php if ($_SESSION['user_role'] == 'admin'): ?>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><h6 class="dropdown-header">Administrace</h6></li>
+                    <li>
+                      <a class="dropdown-item" href="new-loan.php">
+                        <i class="bi bi-plus-circle me-2"></i>Nová výpůjčka
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="admin.php">
+                        <i class="bi bi-gear me-2"></i>Správce
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="edit.php">
+                        <i class="bi bi-book-half me-2"></i>Nová kniha
+                      </a>
+                    </li>
+                  <?php endif; ?>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    <a class="dropdown-item text-danger" href="logout.php">
+                      <i class="bi bi-box-arrow-right me-2"></i>Odhlásit se
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <?php else: ?>
+              <a href="login.php" class="nav-link">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Přihlásit se
+              </a>
+              <a href="registration.php" class="nav-link">
+                <i class="bi bi-person-plus me-2"></i>Registrovat se
+              </a>
+            <?php endif; ?>
           </div>
         </div>
       </nav>
