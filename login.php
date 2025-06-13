@@ -82,6 +82,7 @@
 
         <div class="text-center">
           <p class="text-muted mb-3">Nemáte účet?</p>
+          <a href="password-forget.php" class="btn btn-outline-warning">Zapomenuté heslo</a>
           <div class="d-flex gap-2 justify-content-center">
             <a href="registration.php" class="btn btn-outline-success">
               <i class="bi bi-person-plus me-1"></i>Registrovat se

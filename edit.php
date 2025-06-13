@@ -40,6 +40,21 @@
   }
   #endregion načtení existujícího příspěvku z DB
 
+  if (!empty($_POST['delete']) && $bookId) {
+    // Smaž obrázek, pokud není defaultní
+    if (!empty($bookImage) && $bookImage !== 'default.jpg') {
+        $imagePath = __DIR__ . '/covers/' . $bookImage;
+        if (file_exists($imagePath)) {
+            unlink($imagePath);
+        }
+    }
+    // Smaž knihu z databáze
+    $deleteQuery = $db->prepare('DELETE FROM books WHERE book_id = :id');
+    $deleteQuery->execute([':id' => $bookId]);
+    header('Location: index.php');
+    exit();
+  }
+
   $errors=[];
   if (!empty($_POST)){
     #region zpracování formuláře
@@ -143,7 +158,7 @@
 
         if (!move_uploaded_file($_FILES['image']['tmp_name'], $newName)) {
             $errors['image'] = 'Nepodařilo se nahrát obrázek.';
-        } else if (!empty($oldImage) && file_exists($uploadDirectory . $oldImage)) {
+        } else if (!empty($oldImage) && file_exists($uploadDirectory . $oldImage) && $oldImage != "default.jpg") {
           unlink($uploadDirectory . $oldImage);
         }
       }
@@ -372,15 +387,25 @@
           </div>
 
           <hr class="my-4">
-
-          <div class="d-flex gap-2 justify-content-end">
-            <a href="index.php" class="btn btn-outline-secondary">
-              <i class="bi bi-x-circle me-1"></i>Zrušit
-            </a>
-            <button type="submit" class="btn btn-primary">
-              <i class="bi bi-check-circle me-1"></i>
-              <?php echo $bookId ? 'Aktualizovat' : 'Vytvořit'; ?>
+          <div class="d-flex justify-content-between align-items-center">
+                
+            <?php if ($bookId): ?>
+            <button type="submit" class="btn btn-danger" name="delete" value="1">
+              <i class="bi bi-x me-1"></i>
+              Smazat knihu
             </button>
+            <?php endif; ?>
+          
+                
+            <div class="d-flex gap-2 justify-content-end">
+              <a href="index.php" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle me-1"></i>Zrušit
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle me-1"></i>
+                <?php echo $bookId ? 'Aktualizovat' : 'Vytvořit'; ?>
+              </button>
+            </div>
           </div>
         </form>
       </div>

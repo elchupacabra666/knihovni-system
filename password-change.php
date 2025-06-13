@@ -64,74 +64,74 @@ include 'inc/header.php';
 ?>
 
 <div class="row justify-content-center">
-    <div class="col-lg-6">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-warning text-dark">
-                <h4 class="card-title mb-0">
-                    <i class="bi bi-key me-2"></i>Změna hesla
-                </h4>
-            </div>
-            <div class="card-body p-4">
-                <div class="alert alert-info border-0">
-                    <i class="bi bi-info-circle me-2"></i>
-                    <strong>Požadavky na heslo:</strong>
-                    <ul class="mb-0 mt-2">
-                        <li>Alespoň 8 znaků</li>
-                        <li>Alespoň jedno velké písmeno</li>
-                        <li>Alespoň jedno číslo</li>
-                        <li>Alespoň jeden speciální znak</li>
-                    </ul>
-                </div>
-
-                <form method="post">
-                    <div class="mb-3">
-                        <label for="current_password" class="form-label fw-semibold">
-                            <i class="bi bi-lock me-1"></i>Aktuální heslo
-                        </label>
-                        <input type="password" name="current_password" id="current_password" required
-                            class="form-control <?php echo (!empty($errors['current_password']) ? 'is-invalid' : ''); ?>"
-                            placeholder="Zadejte aktuální heslo" />
-                        <?php
-                        echo (!empty($errors['current_password']) ? '<div class="invalid-feedback">' . $errors['current_password'] . '</div>' : '');
-                        ?>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="new_password" class="form-label fw-semibold">
-                            <i class="bi bi-key me-1"></i>Nové heslo
-                        </label>
-                        <input type="password" name="new_password" id="new_password" required
-                            class="form-control <?php echo (!empty($errors['new_password']) ? 'is-invalid' : ''); ?>"
-                            placeholder="Zadejte nové heslo" />
-                        <?php
-                        echo (!empty($errors['new_password']) ? '<div class="invalid-feedback">' . $errors['new_password'] . '</div>' : '');
-                        ?>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="confirm_password" class="form-label fw-semibold">
-                            <i class="bi bi-check-circle me-1"></i>Potvrzení nového hesla
-                        </label>
-                        <input type="password" name="confirm_password" id="confirm_password" required
-                            class="form-control <?php echo (!empty($errors['confirm_password']) ? 'is-invalid' : ''); ?>"
-                            placeholder="Zadejte nové heslo znovu" />
-                        <?php
-                        echo (!empty($errors['confirm_password']) ? '<div class="invalid-feedback">' . $errors['confirm_password'] . '</div>' : '');
-                        ?>
-                    </div>
-
-                    <div class="d-flex gap-2 justify-content-end">
-                        <a href="index.php" class="btn btn-outline-secondary">
-                            <i class="bi bi-x-circle me-1"></i>Zrušit
-                        </a>
-                        <button type="submit" class="btn btn-warning">
-                            <i class="bi bi-check-circle me-1"></i>Změnit heslo
-                        </button>
-                    </div>
-                </form>
-            </div>
+  <div class="col-lg-6">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-warning text-dark">
+        <h4 class="card-title mb-0">
+          <i class="bi bi-key me-2"></i>Změna hesla
+        </h4>
+      </div>
+      <div class="card-body p-4">
+        <div class="alert alert-info border-0">
+          <i class="bi bi-info-circle me-2"></i>
+          <strong>Požadavky na heslo:</strong>
+          <ul class="mb-0 mt-2">
+            <li>Alespoň 8 znaků</li>
+            <li>Alespoň jedno velké písmeno</li>
+            <li>Alespoň jedno číslo</li>
+            <li>Alespoň jeden speciální znak</li>
+          </ul>
         </div>
+
+        <form method="post">
+          <div class="mb-3">
+            <label for="current_password" class="form-label fw-semibold">
+              <i class="bi bi-lock me-1"></i>Aktuální heslo
+            </label>
+            <input type="password" name="current_password" id="current_password" required
+              class="form-control <?php echo (!empty($errors['current_password']) ? 'is-invalid' : ''); ?>"
+              placeholder="Zadejte aktuální heslo" />
+            <?php
+            echo (!empty($errors['current_password']) ? '<div class="invalid-feedback">' . $errors['current_password'] . '</div>' : '');
+            ?>
+          </div>
+
+          <div class="mb-3">
+            <label for="new_password" class="form-label fw-semibold">
+              <i class="bi bi-key me-1"></i>Nové heslo
+            </label>
+            <input type="password" name="new_password" id="new_password" required
+              class="form-control <?php echo (!empty($errors['new_password']) ? 'is-invalid' : ''); ?>"
+              placeholder="Zadejte nové heslo" />
+            <?php
+            echo (!empty($errors['new_password']) ? '<div class="invalid-feedback">' . $errors['new_password'] . '</div>' : '');
+            ?>
+          </div>
+
+          <div class="mb-4">
+            <label for="confirm_password" class="form-label fw-semibold">
+              <i class="bi bi-check-circle me-1"></i>Potvrzení nového hesla
+            </label>
+            <input type="password" name="confirm_password" id="confirm_password" required
+              class="form-control <?php echo (!empty($errors['confirm_password']) ? 'is-invalid' : ''); ?>"
+              placeholder="Zadejte nové heslo znovu" />
+            <?php
+            echo (!empty($errors['confirm_password']) ? '<div class="invalid-feedback">' . $errors['confirm_password'] . '</div>' : '');
+            ?>
+          </div>
+
+          <div class="d-flex gap-2 justify-content-end">
+            <a href="index.php" class="btn btn-outline-secondary">
+              <i class="bi bi-x-circle me-1"></i>Zrušit
+            </a>
+            <button type="submit" class="btn btn-warning">
+              <i class="bi bi-check-circle me-1"></i>Změnit heslo
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 
 <?php include 'inc/footer.php'; ?>
