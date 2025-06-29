@@ -54,6 +54,7 @@ if (!empty($books)): ?>
             <img src="covers/<?= htmlspecialchars($book['image']) ?>" class="card-img-top" style="height: 280px; object-fit: cover;" alt="<?= htmlspecialchars($book['title']) ?>">
             <div class="position-absolute top-0 end-0 m-2">
               <span class="badge bg-primary"><?= htmlspecialchars($book['category_name']) ?></span>
+              <?php if ($book['available'] == 1) {echo '<span class="badge bg-success"><i class="bi bi-check"></i></badge>';}?>
             </div>
           </div>
           <div class="card-body d-flex flex-column p-3">

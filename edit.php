@@ -186,7 +186,26 @@
         ]);
 
         if ($saveQuery->rowCount() == 0) {
-          $errors['optimistic_lock'] = 'Kniha byla mezitím změněna jiným uživatelem. Zkuste to znovu.';
+              $checkQuery = $db->prepare('SELECT title, description, category_id, image, author, year, country_id FROM books WHERE book_id = :id');
+              $checkQuery->execute([':id' => $bookId]);
+              $current = $checkQuery->fetch(PDO::FETCH_ASSOC);
+
+              if (
+                  $current &&
+                  $current['title'] === $bookTitle &&
+                  $current['description'] === $bookDescription &&
+                  $current['category_id'] == $bookCategoryId &&
+                  $current['image'] === $bookImage &&
+                  $current['author'] === $bookAuthor &&
+                  $current['year'] == $bookYear &&
+                  $current['country_id'] == $bookCountryId
+              ) {
+                  
+                  header('Location: index.php');
+                  exit();
+              }
+
+          $errors['optimistic_lock'] = 'Kniha byla mezitím změněna jiným uživatelem. Zkuste to znovu.'.htmlspecialchars($_POST['updated_at']);
         }
         #endregion aktualizace
       }else{
