@@ -58,11 +58,6 @@
                       </a>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="loans-all.php">
-                        <i class="bi bi-archive me-2"></i>Seznam výpůjček
-                      </a>
-                    </li>
-                    <li>
                       <a class="dropdown-item" href="edit.php">
                         <i class="bi bi-book-half me-2"></i>Nová kniha
                       </a>
