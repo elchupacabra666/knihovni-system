@@ -70,6 +70,9 @@ if (!empty($books)): ?>
               </p>
             <?php endif; ?>
             <div class="mt-auto">
+              <a href="book.php?id=<?= $book['book_id'] ?>" class="btn btn-outline-primary btn-sm w-100">
+                Detail knihy
+              </a>
               <?php if ($_SESSION['user_role'] == 'admin'): ?>
                 <a href="edit.php?id=<?= $book['book_id'] ?>" class="btn btn-outline-primary btn-sm w-100">
                   <i class="bi bi-pencil me-1"></i>Upravit
