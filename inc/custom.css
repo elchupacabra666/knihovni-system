@@ -34,3 +34,21 @@ div.suggestion-item {
 .suggestion-item:hover {
   background-color: #ffffff;
 }
+
+.footer-container {
+  background-color: #343a40;
+}
+
+.ft-contacts-telefon {
+   display: block;
+   float: left;
+   width: 31.47153598281418%;
+   height: 208px;
+   text-align: center;
+   box-sizing: border-box;
+   border-radius: 1px;
+   border-top: 1px solid #999;
+   background: #707070;
+   box-shadow: 0 3px 2px 0 rgba(0, 0, 0, 0.2);
+   padding: 10px;
+}

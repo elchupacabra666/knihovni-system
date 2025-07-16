@@ -24,7 +24,6 @@
       }
     }
 
-    var_dump($book);
 
 
     include 'inc/header.php';
