@@ -4,30 +4,42 @@
         <div class="container">
           <div class="row g-4 text-center justify-content-center">
             
-            <div class="col-md-3">
-              <div class="p-4 bg-secondary bg-opacity-50 shadow-s m">
+            <a href="contact-us.php" class="col-md-3 text-white text-decoration-none">
+              <div class="p-4 bg-secondary bg-opacity-50 shadow-s h-100">
                 <i class="bi bi-chat-left-text fs-1 mb-3"></i>
                 <h5>Napište nám</h5>
-                <a href="#" class="text-white text-decoration-underline small">KONTAKTNÍ FORMULÁŘ</a>
+                <p class="text-white small">KONTAKTNÍ FORMULÁŘ</p>
               </div>
-            </div>
+             </a>
             
-            <div class="col-md-3">
-              <div class="p-4 bg-secondary bg-opacity-50 shadow-sm">
+            <a href="tel:776-401-160" class="col-md-3 text-white text-decoration-none">
+              <div class="p-4 bg-secondary bg-opacity-50 shadow-sm h-100">
                 <i class="bi bi-telephone fs-1 mb-3"></i>
                 <h5>Zavolejte nám</h5>
                 <span class="small">+420 776 401 160</span>
               </div>
-            </div>
+            </a>
             
-            <div class="col-md-3">
-              <div class="p-4 bg-secondary bg-opacity-50 shadow-sm">
-                <i class="bi bi-facebook fs-1 mb-3"></i>
-                <h5>Spojte se s námi</h5>
-                <a href="https://facebook.com/knihovna" class="text-white text-decoration-underline small">facebook.com/knihovna/</a>
+            <a href="https://facebook.com/knihovna" class="col-md-3 text-decoration-none">
+              <div class="p-4 bg-secondary bg-opacity-50 shadow-sm text-decoration-none h-100">
+                <i class="bi bi-facebook text-white fs-1 mb-3"></i>
+                <h5 class="text-white">Spojte se s námi</h5>
               </div>
-            </div>
+             </a>
             
+          </div>
+        </div>
+      </div>
+      
+      <!-- Copyright Section -->
+      <div class="bg-dark text-white py-3">
+        <div class="container">
+          <div class="row">
+            <div class="col-12 text-center">
+              <p class="mb-0">
+                &copy; <?php echo date('Y'); ?> Knihovna. Všechna práva vyhrazena.
+              </p>
+            </div>
           </div>
         </div>
       </div>
